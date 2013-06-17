@@ -3,10 +3,6 @@ RNSwipeViewController
 
 Seemlessly integrate beautifully functional view controllers into your app that are accessible with just the swipe of a finger. Inspiration for this project came from [David Smith](http://david-smith.org) and his gorgeous app [Check The Weather](http://checktheweather.co). 
 
-~~Note: As of now, RNSwipeViewController is intended for use with portrait orientation on iPhone/iPod only.~~
-
-~~Orientation support added on 11/6/12. Still intended devices are iPhone/iPod.~~
-
 iPad support added along with example on 11/8/12.
 
 #### [View the Docs](http://rnystrom.github.com/RNSwipeViewController/index.html) ####
@@ -37,6 +33,37 @@ self.bottomViewController = [self.storyboard instantiateViewControllerWithIdenti
 ```
 
 With minimal effort, your views are now setup.
+
+#### Setup in Code
+
+If you want to avoid Storyboards (I don't blame you), you can setup everything in code. Here is an example from the AppDelegate of a  app of mine.
+
+``` objective-c
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
+    // PTMasterController is a subclass of RNSwipeViewController
+    PTMasterController *masterController = [[PTMasterController alloc] init];
+ 
+    PTSchemeController *scheme = [[PTSchemeController alloc] init];
+    PTUtilityController *utility = [[PTUtilityController alloc] init];
+    PTWritingController *writing = [[PTWritingController alloc] init];
+    
+    masterController.centerViewController = writing;
+    masterController.rightViewController = utility;
+    masterController.leftViewController = scheme;
+    
+    masterController.leftVisibleWidth = kGridSize + 3 * kPadding;
+    masterController.rightVisibleWidth = kGridSize * 2 + 3 * kPadding;
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+ 
+    self.window.rootViewController = masterController;
+ 
+    self.window.backgroundColor = [UIColor underPageBackgroundColor];
+    [self.window makeKeyAndVisible];
+    
+    return YES;
+}
+```
 
 ## Performance ##
 
@@ -87,6 +114,18 @@ NSString * const RNSwipeViewControllerCenterDidAppear;
 
 The only real KVO-purposed property in here is <code>isToggled</code>. If there is a need for more options I'll add them.
 
+## Percent Protocol ##
+
+#### New Feature
+
+Your left, right, and bottom view controllers can optionally conform to the <code>RNRevealViewControllerProtocol</code> protocol in order to receive updates on how far the view controller is presented. The percent is an integer 0 to 100. The only method this protocol uses is:
+
+``` objective-c
+- (void)changedPercentReveal:(NSInteger)percent;
+```
+
+The example updates views in the left and right controller.
+
 ## Status ##
 
 If you're interested in what your swipe controller looks like presently, you can ask the <code>visibleState</code> property what is showing. The possibilities are
@@ -104,30 +143,19 @@ Or, if you need to access the presented view controller directly, you can do so.
 UIViewController *visibleController = self.swipeController.visibleController;
 ```
 
+## Apps
+
+If you've used this project in a live app, please <a href="mailTo:rnystrom@whoisryannystrom.com">let me know</a>! Nothing makes me happier than seeing someone else take my work and go wild with it.
+
+* [Poetreat](https://itunes.apple.com/us/app/poetreat-write-quick-simple/id636392647?ls=1&mt=8)
+* [WeatherFy](https://itunes.apple.com/us/app/weatherfy/id588926390?mt=8&ign-mpt=uo%3D4)
+
 ## Contact ##
 
-* [@nystrorm](https://twitter.com/nystrorm) on Twitter
+* [@nystrorm](https://twitter.com/_ryannystrom) on Twitter
 * [@rnystrom](https://github.com/rnystrom) on Github
 * <a href="mailTo:rnystrom@whoisryannystrom.com">rnystrom [at] whoisryannystrom [dot] com</a>
 
 ## License ##
 
-Copyright (c) 2012 Ryan Nystrom (http://whoisryannystrom.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+See [LICENSE](https://raw.github.com/rnystrom/RNSwipeViewController/0.1.0/LICENSE)
